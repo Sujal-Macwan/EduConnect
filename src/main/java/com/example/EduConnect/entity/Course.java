@@ -1,5 +1,7 @@
 package com.example.EduConnect.entity;
 
+import com.example.EduConnect.dto.CourseDTO;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,18 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "courses")
 public class Course{
+    public Course(CourseDTO courseDTO){
+        this.id = courseDTO.getId();
+        this.title = courseDTO.getTitle();
+        this.description = courseDTO.getDescription();
+        this.category = courseDTO.getCategory();
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "instructor_id")
+    @JsonIgnore // to avoid infinite recursion in JSON serialization
+    private User instructor;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

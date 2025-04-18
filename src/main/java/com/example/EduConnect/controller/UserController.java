@@ -32,4 +32,10 @@ public class UserController {
     public User getUserById(@PathVariable Long id){
         return userService.getUserById(id);
     }
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
+    public User getCurrentUser(){
+        return userService.getCurrentUser();
+    }
 }

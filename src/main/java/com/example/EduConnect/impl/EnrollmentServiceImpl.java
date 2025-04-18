@@ -1,21 +1,47 @@
 package com.example.EduConnect.impl;
 
+import com.example.EduConnect.dto.CourseDTO;
+import com.example.EduConnect.entity.Course;
 import com.example.EduConnect.entity.Enrollment;
+import com.example.EduConnect.entity.User;
 import com.example.EduConnect.repository.EnrollmentRepository;
+import com.example.EduConnect.service.CourseService;
 import com.example.EduConnect.service.EnrollmentService;
+import com.example.EduConnect.service.UserService;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public class EnrollmentServiceImpl implements EnrollmentService{
     private final EnrollmentRepository enrollmentRepository;
+    private final UserService userService;
+    private final CourseService courseService;
 
-    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository){
+    public EnrollmentServiceImpl(EnrollmentRepository enrollmentRepository, UserService userService, CourseService courseService){
         this.enrollmentRepository = enrollmentRepository;
+        this.userService = userService;
+        this.courseService = courseService;
     }
 
     @Override
-    public void enrollUser(Enrollment enrollment){
-        enrollmentRepository.save(enrollment);
+    public Enrollment enrollUserInCourse(Long courseId){
+        User student = userService.getCurrentUser();
+
+        CourseDTO courseDTO = courseService.getCourseById(courseId);
+        Course course = new Course(courseDTO);
+
+        Optional<Enrollment> existingEnrollment = enrollmentRepository.findByUserAndCourse(student, course);
+        if(existingEnrollment.isPresent()){
+            throw new IllegalStateException("Student is already enrolled in this course.");
+        }
+
+        Enrollment enrollment = new Enrollment();
+        enrollment.setUser(student);
+        enrollment.setCourse(course);
+        enrollment.setEnrolledAt(LocalDateTime.now());
+
+        return enrollmentRepository.save(enrollment);
     }
 
     @Override

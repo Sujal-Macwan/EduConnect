@@ -1,9 +1,12 @@
-package com.example.EduConnect.service.impl;
+package com.example.EduConnect.impl;
 
 import com.example.EduConnect.dto.CourseDTO;
 import com.example.EduConnect.entity.Course;
+import com.example.EduConnect.entity.User;
 import com.example.EduConnect.repository.CourseRepository;
 import com.example.EduConnect.service.CourseService;
+import com.example.EduConnect.service.UserService;
+import org.hibernate.type.ListType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,20 +17,26 @@ import java.util.stream.Collectors;
 public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
+    private final UserService userService;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository) {
+    public CourseServiceImpl(CourseRepository courseRepository, UserService userService) {
         this.courseRepository = courseRepository;
+        this.userService = userService;
     }
 
     @Override
     public void addCourse(CourseDTO courseDTO) {
+        User instructor =  userService.getCurrentUser();
+
         Course course = new Course();
         course.setTitle(courseDTO.getTitle());
         course.setDescription(courseDTO.getDescription());
         course.setCategory(courseDTO.getCategory());
+        course.setInstructor(instructor);
         // Set createdAt in the entity is handled in prePersist
         courseRepository.save(course);
+        Course saved = courseRepository.save(course);
     }
 
     @Override
@@ -43,6 +52,11 @@ public class CourseServiceImpl implements CourseService {
         Course course = courseRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Course not found"));
         return convertToDTO(course);
+    }
+
+    @Override
+    public List<Course> getCourseByInstructor(User instructor){
+        return courseRepository.findByIstructor();
     }
 
     @Override
