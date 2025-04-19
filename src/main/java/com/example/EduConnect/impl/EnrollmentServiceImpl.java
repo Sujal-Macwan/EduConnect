@@ -4,15 +4,18 @@ import com.example.EduConnect.dto.CourseDTO;
 import com.example.EduConnect.entity.Course;
 import com.example.EduConnect.entity.Enrollment;
 import com.example.EduConnect.entity.User;
+import com.example.EduConnect.exception.ResourceNotFoundException;
 import com.example.EduConnect.repository.EnrollmentRepository;
 import com.example.EduConnect.service.CourseService;
 import com.example.EduConnect.service.EnrollmentService;
 import com.example.EduConnect.service.UserService;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class EnrollmentServiceImpl implements EnrollmentService{
     private final EnrollmentRepository enrollmentRepository;
     private final UserService userService;
@@ -51,6 +54,6 @@ public class EnrollmentServiceImpl implements EnrollmentService{
 
     @Override
     public Enrollment getEnrollmentById(Long id){
-        return enrollmentRepository.findById(id).orElse(null);
+        return enrollmentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Enrollment not found with id: " + id));
     }
 }

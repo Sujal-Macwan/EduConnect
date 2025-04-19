@@ -48,11 +48,20 @@ public class Course{
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    @PrePersist
-    public void prePersist(){
-        this.createdAt = LocalDateTime.now();
-    }
+    @Column(nullable = false)
+    private double price;
+
 
     @PrePersist
-    public void preUpdate(){this.updatedAt = LocalDateTime.now();}
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
+
 }

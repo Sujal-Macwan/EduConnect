@@ -2,6 +2,7 @@ package com.example.EduConnect.entity;
 
 import com.example.EduConnect.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +29,7 @@ public class User implements UserDetails {
     private String name;
 
     @Column(unique = true, nullable = false)
+    @Email
     private String email;
     private String password;
 

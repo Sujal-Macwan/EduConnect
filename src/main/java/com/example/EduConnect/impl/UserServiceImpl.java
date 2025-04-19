@@ -1,6 +1,7 @@
 package com.example.EduConnect.impl;
 
 import com.example.EduConnect.entity.User;
+import com.example.EduConnect.exception.ResourceNotFoundException;
 import com.example.EduConnect.repository.UserRepository;
 import com.example.EduConnect.service.UserService;
 import org.springframework.security.core.Authentication;
@@ -30,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUserById(Long id){
-        return userRepository.findById(id).orElse(null);
+        return userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
     }
 
     @Override

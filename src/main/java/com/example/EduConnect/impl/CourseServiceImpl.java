@@ -3,6 +3,7 @@ package com.example.EduConnect.impl;
 import com.example.EduConnect.dto.CourseDTO;
 import com.example.EduConnect.entity.Course;
 import com.example.EduConnect.entity.User;
+import com.example.EduConnect.exception.ResourceNotFoundException;
 import com.example.EduConnect.repository.CourseRepository;
 import com.example.EduConnect.service.CourseService;
 import com.example.EduConnect.service.UserService;
@@ -26,7 +27,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    public void addCourse(CourseDTO courseDTO) {
+    public Course createCourse(CourseDTO courseDTO) {
         User instructor =  userService.getCurrentUser();
 
         Course course = new Course();
@@ -36,7 +37,7 @@ public class CourseServiceImpl implements CourseService {
         course.setInstructor(instructor);
         // Set createdAt in the entity is handled in prePersist
         courseRepository.save(course);
-        Course saved = courseRepository.save(course);
+        return courseRepository.save(course);
     }
 
     @Override
@@ -50,13 +51,13 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public CourseDTO getCourseById(Long id) {
         Course course = courseRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Course not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id: " + id));
         return convertToDTO(course);
     }
 
     @Override
     public List<Course> getCourseByInstructor(User instructor){
-        return courseRepository.findByIstructor();
+        return courseRepository.findByInstructor(instructor);
     }
 
     @Override
@@ -65,7 +66,8 @@ public class CourseServiceImpl implements CourseService {
                 course.getId(),
                 course.getTitle(),
                 course.getDescription(),
-                course.getCategory()
+                course.getCategory(),
+                course.getPrice()
         );
     }
 }

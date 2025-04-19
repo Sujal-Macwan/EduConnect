@@ -3,9 +3,12 @@ package com.example.EduConnect.controller;
 import com.example.EduConnect.entity.Course;
 import com.example.EduConnect.entity.Enrollment;
 import com.example.EduConnect.entity.User;
+import com.example.EduConnect.model.ApiResponse;
 import com.example.EduConnect.service.CourseService;
 import com.example.EduConnect.service.EnrollmentService;
 import com.example.EduConnect.service.UserService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,26 +30,36 @@ public class EnrollmentController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
-    public List<Enrollment> getAllEnrollments(){
-        return enrollmentService.getAllEnrollment();
+    public ResponseEntity<ApiResponse<List<Enrollment>>> getAllEnrollments(){
+        List<Enrollment> enrollments = enrollmentService.getAllEnrollment();
+        return ResponseEntity.ok(new ApiResponse<>("Enrollments fetched successfully", enrollments, true, HttpStatus.OK.value()));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('STUDENT')")
-    public void addEnrollment(@RequestParam Long courseId){
+    public ResponseEntity<ApiResponse<Void>> addEnrollment(@RequestParam Long courseId) {
         enrollmentService.enrollUserInCourse(courseId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ApiResponse<>("Enrolled successfully", null, true, HttpStatus.CREATED.value())
+        );
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
-    public Enrollment getEnrollmentById(@PathVariable Long id){
-        return enrollmentService.getEnrollmentById(id);
+    public ResponseEntity<ApiResponse<Enrollment>> getEnrollmentById(@PathVariable Long id) {
+        Enrollment enrollment = enrollmentService.getEnrollmentById(id);
+        return ResponseEntity.ok(
+                new ApiResponse<>("Enrollment fetched successfully", enrollment, true, HttpStatus.OK.value())
+        );
     }
 
     @GetMapping("/my-courses")
     @PreAuthorize("hasRole('INSTRUCTOR')")
-    List<Course> getInstructorCourses(){
+    public ResponseEntity<ApiResponse<List<Course>>> getInstructorCourses() {
         User currentUser = userService.getCurrentUser();
-        return courseService.getCourseByInstructor(currentUser);
+        List<Course> courses = courseService.getCourseByInstructor(currentUser);
+        return ResponseEntity.ok(
+                new ApiResponse<>("Courses fetched successfully", courses, true, HttpStatus.OK.value())
+        );
     }
 }

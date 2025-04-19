@@ -11,10 +11,10 @@ import java.util.Date;
 
 @Service
 public class JwtService {
-    private final long jwtExpiration = 1000*60*60;
-    private final Key key= Keys.secretKeyFor(SignatureAlgorithm.ES256);
+    private final Key key= Keys.secretKeyFor(SignatureAlgorithm.HS256);
 
     public String generateToken(String email){
+        long jwtExpiration = 1000 * 60 * 60;
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())

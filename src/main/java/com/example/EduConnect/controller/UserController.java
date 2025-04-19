@@ -1,7 +1,11 @@
 package com.example.EduConnect.controller;
 
 import com.example.EduConnect.entity.User;
+import com.example.EduConnect.model.ApiResponse;
 import com.example.EduConnect.service.UserService;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,25 +21,29 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user){
-        return userService.createUser(user);
+    public ApiResponse<User> createUser(@Valid @RequestBody User user){
+        User createdUser = userService.createUser(user);
+        return new ApiResponse<>("User created successfully", createdUser, true, HttpStatus.CREATED.value());
     }
 
-    @GetMapping
+    @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
-    public List<User> getAllUser(){
-        return userService.getAllUser();
+    public ApiResponse<List<User>> getAllUser(){
+        List<User> users = userService.getAllUser();
+        return new ApiResponse<>("Users fetched successfully", users, true, HttpStatus.OK.value());
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
-    public User getUserById(@PathVariable Long id){
-        return userService.getUserById(id);
+    public ApiResponse<User> getUserById(@PathVariable Long id){
+        User user = userService.getUserById(id);
+        return new ApiResponse<>("User fetched successfully", user, true, HttpStatus.OK.value());
     }
 
-    @GetMapping
+    @GetMapping("/me")
     @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
-    public User getCurrentUser(){
-        return userService.getCurrentUser();
+    public ApiResponse<User> getCurrentUser(){
+        User user = userService.getCurrentUser();
+        return new ApiResponse<>("Current user fetched successfully", user, true, HttpStatus.OK.value());
     }
 }
