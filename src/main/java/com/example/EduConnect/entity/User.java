@@ -1,6 +1,7 @@
 package com.example.EduConnect.entity;
 
 import com.example.EduConnect.enums.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,10 @@ public class User implements UserDetails {
 
     private LocalDateTime createdAt;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<Enrollment> enrollments;
+
     @PrePersist
     public void prePersist(){
         this.createdAt = LocalDateTime.now();
@@ -45,7 +50,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override

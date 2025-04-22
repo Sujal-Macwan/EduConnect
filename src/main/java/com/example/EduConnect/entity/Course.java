@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -51,6 +52,10 @@ public class Course{
     @Column(nullable = false)
     private double price;
 
+    @OneToMany(mappedBy = "course")
+    @JsonIgnore
+    private List<Enrollment> enrollments;
+
 
     @PrePersist
     public void prePersist() {
@@ -63,5 +68,4 @@ public class Course{
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 }

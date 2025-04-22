@@ -1,5 +1,7 @@
 package com.example.EduConnect.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,10 +22,12 @@ public class Enrollment {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
+    @JsonIgnoreProperties({"user"})
     private Course course;
 
     private LocalDateTime enrolledAt;

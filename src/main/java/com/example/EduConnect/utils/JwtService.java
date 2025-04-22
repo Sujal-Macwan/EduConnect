@@ -11,15 +11,16 @@ import java.util.Date;
 
 @Service
 public class JwtService {
-    private final Key key= Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final String SECRET= "";//Enter your key here
+    private final Key key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    public String generateToken(String email){
+    public String generateToken(UserDetails userDetails){
         long jwtExpiration = 1000 * 60 * 60;
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(key)
+                .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -34,6 +35,6 @@ public class JwtService {
 
     public boolean isTokenValid(String token, UserDetails userEmail){
         final String email = extractEmail(token);
-        return email.equals(userEmail) && !isTokenExpired(token);
+        return email.equals(userEmail.getUsername()) && !isTokenExpired(token);
     }
 }

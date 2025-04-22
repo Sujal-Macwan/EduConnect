@@ -3,7 +3,7 @@ package com.example.EduConnect.controller;
 import com.example.EduConnect.dto.AuthenticationRequest;
 import com.example.EduConnect.dto.AuthenticationResponse;
 import com.example.EduConnect.dto.RegisterRequest;
-import com.example.EduConnect.impl.AuthenticationServiceImpl;
+import com.example.EduConnect.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final AuthenticationServiceImpl authService;
+    private final AuthenticationService authService;
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register (@RequestBody RegisterRequest request){
