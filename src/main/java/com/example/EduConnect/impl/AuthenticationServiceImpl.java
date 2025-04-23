@@ -46,23 +46,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request){
-//        System.out.println("Inside authenticate(): " + this.getClass().getName());
-//
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        request.getEmail(),
-//                        request.getPassword()
-//                )
-//        );
-//
-//        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
-//
-//        String token = jwtService.generateToken(user);
-//
-//        return new AuthenticationResponse(token);
-        System.out.println("Inside authenticate()");
+        System.out.println("Inside authenticate(): " + this.getClass().getName());
 
-        // First step: Test the authenticationManager.authenticate()
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -70,6 +55,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
 
-        return new AuthenticationResponse("TEST - Step 1");
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new RuntimeException("User not found"));
+
+        String token = jwtService.generateToken(user);
+
+        return new AuthenticationResponse(token);
+//        System.out.println("Inside authenticate()");
+//
+//        // First step: Test the authenticationManager.authenticate()
+//        authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(
+//                        request.getEmail(),
+//                        request.getPassword()
+//                )
+//        );
+//
+//        return new AuthenticationResponse("TEST - Step 1");
     }
 }

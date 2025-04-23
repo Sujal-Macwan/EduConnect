@@ -1,6 +1,8 @@
 package com.example.EduConnect.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,6 +24,7 @@ public class CourseDTO {
     @NotBlank(message = "Category required")
     private String category;
 
-    @NotBlank(message = "Price required")
+    @NotNull(message = "Price cannot be null")
+    @Positive(message = "Price must be a positive number")
     private double price;
 }

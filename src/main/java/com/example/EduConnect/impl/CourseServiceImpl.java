@@ -5,10 +5,12 @@ import com.example.EduConnect.entity.Course;
 import com.example.EduConnect.entity.User;
 import com.example.EduConnect.exception.ResourceNotFoundException;
 import com.example.EduConnect.repository.CourseRepository;
+import com.example.EduConnect.repository.UserRepository;
 import com.example.EduConnect.service.CourseService;
 import com.example.EduConnect.service.UserService;
 import org.hibernate.type.ListType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,24 +21,24 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @Autowired
-    public CourseServiceImpl(CourseRepository courseRepository, UserService userService) {
+    public CourseServiceImpl(CourseRepository courseRepository, UserService userService, UserRepository userRepository) {
         this.courseRepository = courseRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @Override
     public Course createCourse(CourseDTO courseDTO) {
-        User instructor =  userService.getCurrentUser();
+//        User instructor =  userService.getCurrentUser();
 
         Course course = new Course();
         course.setTitle(courseDTO.getTitle());
         course.setDescription(courseDTO.getDescription());
         course.setCategory(courseDTO.getCategory());
-        course.setInstructor(instructor);
-        // Set createdAt in the entity is handled in prePersist
-        courseRepository.save(course);
+        course.setPrice(courseDTO.getPrice());
         return courseRepository.save(course);
     }
 
