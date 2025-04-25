@@ -37,7 +37,7 @@ public class EnrollmentController {
 
     @PostMapping
     @PreAuthorize("hasRole('STUDENT')")
-    public ResponseEntity<ApiResponse<Void>> addEnrollment(@RequestParam Long courseId) {
+    public ResponseEntity<ApiResponse<Void>> addEnrollment(@RequestBody Long courseId) {
         enrollmentService.enrollUserInCourse(courseId);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ApiResponse<>("Enrolled successfully", null, true, HttpStatus.CREATED.value())

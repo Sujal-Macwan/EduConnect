@@ -60,16 +60,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String token = jwtService.generateToken(user);
 
         return new AuthenticationResponse(token);
-//        System.out.println("Inside authenticate()");
-//
-//        // First step: Test the authenticationManager.authenticate()
-//        authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(
-//                        request.getEmail(),
-//                        request.getPassword()
-//                )
-//        );
-//
-//        return new AuthenticationResponse("TEST - Step 1");
     }
 }

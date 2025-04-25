@@ -32,13 +32,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course createCourse(CourseDTO courseDTO) {
-//        User instructor =  userService.getCurrentUser();
+        User instructor =  userService.getCurrentUser();
 
         Course course = new Course();
         course.setTitle(courseDTO.getTitle());
         course.setDescription(courseDTO.getDescription());
         course.setCategory(courseDTO.getCategory());
         course.setPrice(courseDTO.getPrice());
+        course.setInstructor(instructor);
         return courseRepository.save(course);
     }
 
